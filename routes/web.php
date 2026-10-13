@@ -2,6 +2,7 @@
 
 use App\Models\DocumentoDigitalizado;
 use App\Models\TrilhaAuditoria;
+use App\Models\TabelaTemporalidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -126,9 +127,18 @@ Route::get('dashboard', function () {
         ]);
     })->name('documentos.index');
 
-    // Formulário de upload
-    Route::get('/documentos/upload', function () {
-        return Inertia::render('Documentos/Upload');
+        Route::get('/documentos/upload', function () {
+        $ttds = TabelaTemporalidade::orderBy('tipo_documental')->get([
+            'id',
+            'tipo_documental',
+            'prazo_guarda_corrente',
+            'prazo_guarda_intermediaria',
+            'destinacao_final',
+        ]);
+
+        return Inertia::render('Documentos/Upload', [
+            'ttds' => $ttds,
+        ]);
     })->name('documentos.upload');
 
 Route::post('/documentos', function (Request $request) {
@@ -221,22 +231,22 @@ Route::post('/documentos', function (Request $request) {
         // ==========================================
     // VISUALIZAR DOCUMENTO
     // ==========================================
-    Route::get('/documentos/{id}', function ($id) {
-        $documento = DocumentoDigitalizado::findOrFail($id);
-        
-        // Registrar visualização na auditoria
-        TrilhaAuditoria::create([
-            'documento_digitalizado_id' => $documento->id,
-            'usuario_id' => Auth::id(),
-            'acao' => 'VISUALIZOU',
-            'ip_origem' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
-        
-        return Inertia::render('Documentos/Show', [
-            'documento' => $documento,
-        ]);
-    })->name('documentos.show');
+Route::get('/documentos/{id}', function ($id) {
+    $documento = DocumentoDigitalizado::with('tabelaTemporalidade')->findOrFail($id);
+    
+    // Registrar visualização na auditoria
+    TrilhaAuditoria::create([
+        'documento_digitalizado_id' => $documento->id,
+        'usuario_id' => Auth::id(),
+        'acao' => 'VISUALIZOU',
+        'ip_origem' => request()->ip(),
+        'user_agent' => request()->userAgent(),
+    ]);
+    
+    return Inertia::render('Documentos/Show', [
+        'documento' => $documento,
+    ]);
+})->name('documentos.show');
 
     // ==========================================
     // DOWNLOAD DO ARQUIVO

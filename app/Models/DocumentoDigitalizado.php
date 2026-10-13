@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DocumentoDigitalizado extends Model
 {
@@ -19,6 +20,7 @@ class DocumentoDigitalizado extends Model
         'data_emissao_original_papel',
         'localizacao_fisica_original',
         'tipo_documental',
+        'tabela_temporalidade_id', // ← ADICIONADO
         'suporte_original',
         'caminho_arquivo',
         'hash_sha256',
@@ -31,31 +33,37 @@ class DocumentoDigitalizado extends Model
         'equipamento_scanner',
         'destinacao_final', // GUARDA_PERMANENTE ou GUARDA_TEMPORARIA
         'status', // PENDENTE, DIGITALIZADO, ASSINADO, ELIMINADO
-        'tenant_id' // Para multi-tenant
+        'tenant_id', // Para multi-tenant
     ];
 
     protected $casts = [
         'data_emissao_original_papel' => 'date',
         'data_hora_digitalizacao' => 'datetime',
         'tamanho_arquivo' => 'integer',
-        'resolucao_dpi' => 'integer'
+        'resolucao_dpi' => 'integer',
     ];
 
-    // Relacionamento: Um documento tem um metadado
+    /**
+     * Relacionamento: Um documento tem um metadado.
+     */
     public function metadado(): HasOne
     {
         return $this->hasOne(MetadadoDigitalizacao::class);
     }
 
-    // Relacionamento: Um documento tem várias trilhas de auditoria
+    /**
+     * Relacionamento: Um documento tem várias trilhas de auditoria.
+     */
     public function auditorias(): HasMany
     {
         return $this->hasMany(TrilhaAuditoria::class);
     }
 
-    // Relacionamento: Um documento pertence a uma TTD
-    public function tabelaTemporalidade()
+    /**
+     * Relacionamento: Um documento pertence a uma TTD.
+     */
+    public function tabelaTemporalidade(): BelongsTo
     {
-        return $this->belongsTo(TabelaTemporalidade::class);
+        return $this->belongsTo(TabelaTemporalidade::class, 'tabela_temporalidade_id');
     }
 }

@@ -1,5 +1,15 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Download, ShieldCheck, FileText, Calendar, HardDrive, Eye } from 'lucide-react';
+import {
+    ArrowLeft,
+    Download,
+    ShieldCheck,
+    FileText,
+    Calendar,
+    HardDrive,
+    Eye,
+    Table2,
+    Clock,
+} from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +23,16 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import type { BreadcrumbItem } from '@/types';
 
+interface TTD {
+    id: number;
+    tipo_documental: string;
+    prazo_guarda_corrente: number;
+    prazo_guarda_intermediaria: number;
+    destinacao_final: 'GUARDA_PERMANENTE' | 'ELIMINACAO';
+    base_legal: string | null;
+    observacoes: string | null;
+}
+
 interface Documento {
     id: number;
     titulo: string;
@@ -20,6 +40,8 @@ interface Documento {
     data_emissao_original_papel: string | null;
     localizacao_fisica_original: string | null;
     tipo_documental: string;
+    tabela_temporalidade_id: number | null;
+    tabela_temporalidade?: TTD | null;
     suporte_original: string;
     caminho_arquivo: string;
     hash_sha256: string;
@@ -69,8 +91,10 @@ export default function Show({ documento }: Props) {
         ELIMINADO: 'bg-red-100 text-red-800',
     };
 
+    const ttd = documento.tabela_temporalidade;
+
     return (
-        <>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={documento.titulo} />
 
             <div className="flex h-full flex-1 flex-col gap-4 p-4 max-w-5xl mx-auto">
@@ -122,6 +146,133 @@ export default function Show({ documento }: Props) {
                     </Link>
                 </div>
 
+                {/* Card: TTD Vinculada */}
+                {ttd ? (
+                    <Card className="border-blue-200 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-950/20">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Table2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                Tabela de Temporalidade Vinculada
+                            </CardTitle>
+                            <CardDescription>
+                                Ciclo de vida do documento segundo a TTD
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div>
+                                    <p className="text-sm text-muted-foreground">
+                                        Tipo Documental
+                                    </p>
+                                    <p className="font-semibold">{ttd.tipo_documental}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-muted-foreground">
+                                        Destinação Final
+                                    </p>
+                                    {ttd.destinacao_final === 'GUARDA_PERMANENTE' ? (
+                                        <Badge className="bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-300">
+                                            🛡️ Guarda Permanente
+                                        </Badge>
+                                    ) : (
+                                        <Badge className="bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300">
+                                            🗑️ Eliminação
+                                        </Badge>
+                                    )}
+                                </div>
+                            </div>
+
+                            <Separator />
+
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div className="flex items-center gap-3">
+                                    <Clock className="h-8 w-8 text-blue-600" />
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Prazo Corrente
+                                        </p>
+                                        <p className="font-semibold">
+                                            {ttd.prazo_guarda_corrente} ano(s)
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Clock className="h-8 w-8 text-blue-600" />
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Prazo Intermediário
+                                        </p>
+                                        <p className="font-semibold">
+                                            {ttd.prazo_guarda_intermediaria} ano(s)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {ttd.base_legal && (
+                                <>
+                                    <Separator />
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Base Legal
+                                        </p>
+                                        <p className="font-medium text-sm">
+                                            {ttd.base_legal}
+                                        </p>
+                                    </div>
+                                </>
+                            )}
+
+                            <Separator />
+
+                            <div className="rounded-md bg-blue-100/50 dark:bg-blue-950/40 p-3">
+                                <p className="text-sm text-blue-900 dark:text-blue-100">
+                                    <strong>Prazo total de guarda:</strong>{' '}
+                                    {ttd.prazo_guarda_corrente + ttd.prazo_guarda_intermediaria}{' '}
+                                    ano(s)
+                                    {ttd.destinacao_final === 'GUARDA_PERMANENTE' && (
+                                        <span className="ml-2">
+                                            → Após esse prazo, mantém-se em guarda permanente
+                                            para sempre.
+                                        </span>
+                                    )}
+                                    {ttd.destinacao_final === 'ELIMINACAO' && (
+                                        <span className="ml-2">
+                                            → Após esse prazo, pode ser eliminado mediante edital.
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
+
+                            <div className="flex justify-end">
+                                <Link href={`/ttd/${ttd.id}/edit`}>
+                                    <Button variant="outline" size="sm">
+                                        <Table2 className="mr-2 h-4 w-4" />
+                                        Ver TTD completa
+                                    </Button>
+                                </Link>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <Card className="border-yellow-200 dark:border-yellow-900 bg-yellow-50/50 dark:bg-yellow-950/20">
+                        <CardContent className="py-6">
+                            <div className="flex items-start gap-3">
+                                <Table2 className="h-5 w-5 text-yellow-700 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="font-semibold text-yellow-800 dark:text-yellow-300">
+                                        Sem Tabela de Temporalidade vinculada
+                                    </p>
+                                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                                        Este documento não possui uma TTD associada. Isso pode
+                                        ter ocorrido antes da implementação do vínculo.
+                                    </p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 <div className="grid gap-4 md:grid-cols-2">
                     {/* Informações do Documento */}
                     <Card>
@@ -138,19 +289,37 @@ export default function Show({ documento }: Props) {
                             </div>
                             <Separator />
                             <div>
-                                <p className="text-sm text-muted-foreground">Data de Emissão Original</p>
-                                <p className="font-medium">{formatarData(documento.data_emissao_original_papel)}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Data de Emissão Original
+                                </p>
+                                <p className="font-medium">
+                                    {formatarData(documento.data_emissao_original_papel)}
+                                </p>
                             </div>
                             <Separator />
                             <div>
-                                <p className="text-sm text-muted-foreground">Localização Física Original</p>
-                                <p className="font-medium">{documento.localizacao_fisica_original || '-'}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Localização Física Original
+                                </p>
+                                <p className="font-medium">
+                                    {documento.localizacao_fisica_original || '-'}
+                                </p>
                             </div>
                             <Separator />
                             <div>
-                                <p className="text-sm text-muted-foreground">Destinação Final</p>
-                                <Badge variant={documento.destinacao_final === 'GUARDA_PERMANENTE' ? 'default' : 'secondary'}>
-                                    {documento.destinacao_final === 'GUARDA_PERMANENTE' ? '🛡️ Guarda Permanente' : '📦 Guarda Temporária'}
+                                <p className="text-sm text-muted-foreground">
+                                    Destinação Final
+                                </p>
+                                <Badge
+                                    variant={
+                                        documento.destinacao_final === 'GUARDA_PERMANENTE'
+                                            ? 'default'
+                                            : 'secondary'
+                                    }
+                                >
+                                    {documento.destinacao_final === 'GUARDA_PERMANENTE'
+                                        ? '🛡️ Guarda Permanente'
+                                        : '📦 Guarda Temporária'}
                                 </Badge>
                             </div>
                         </CardContent>
@@ -167,28 +336,44 @@ export default function Show({ documento }: Props) {
                         <CardContent className="space-y-4">
                             <div>
                                 <p className="text-sm text-muted-foreground">Data/Hora</p>
-                                <p className="font-medium">{formatarData(documento.data_hora_digitalizacao)}</p>
+                                <p className="font-medium">
+                                    {formatarData(documento.data_hora_digitalizacao)}
+                                </p>
                             </div>
                             <Separator />
                             <div>
-                                <p className="text-sm text-muted-foreground">Operador Responsável</p>
-                                <p className="font-medium">{documento.operador_responsavel_nome}</p>
-                                <p className="text-sm text-muted-foreground">{documento.operador_responsavel_cpf}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Operador Responsável
+                                </p>
+                                <p className="font-medium">
+                                    {documento.operador_responsavel_nome}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    {documento.operador_responsavel_cpf}
+                                </p>
                             </div>
                             <Separator />
                             <div>
-                                <p className="text-sm text-muted-foreground">Equipamento Scanner</p>
-                                <p className="font-medium">{documento.equipamento_scanner || '-'}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Equipamento Scanner
+                                </p>
+                                <p className="font-medium">
+                                    {documento.equipamento_scanner || '-'}
+                                </p>
                             </div>
                             <Separator />
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Resolução</p>
-                                    <p className="font-medium">{documento.resolucao_dpi} DPI</p>
+                                    <p className="font-medium">
+                                        {documento.resolucao_dpi} DPI
+                                    </p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Formato</p>
-                                    <p className="font-medium">{documento.formato_arquivo}</p>
+                                    <p className="font-medium">
+                                        {documento.formato_arquivo}
+                                    </p>
                                 </div>
                             </div>
                         </CardContent>
@@ -208,7 +393,9 @@ export default function Show({ documento }: Props) {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <p className="text-sm text-muted-foreground mb-2">Hash SHA-256</p>
+                            <p className="text-sm text-muted-foreground mb-2">
+                                Hash SHA-256
+                            </p>
                             <code className="block p-3 bg-muted rounded-md text-xs break-all">
                                 {documento.hash_sha256}
                             </code>
@@ -216,14 +403,18 @@ export default function Show({ documento }: Props) {
                         <Separator />
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-sm text-muted-foreground">Tamanho do Arquivo</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Tamanho do Arquivo
+                                </p>
                                 <p className="font-medium flex items-center gap-2">
                                     <HardDrive className="h-4 w-4" />
                                     {formatarTamanho(documento.tamanho_arquivo)}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground">Caminho no Storage</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Caminho no Storage
+                                </p>
                                 <p className="font-medium text-xs break-all">
                                     {documento.caminho_arquivo}
                                 </p>
@@ -232,6 +423,6 @@ export default function Show({ documento }: Props) {
                     </CardContent>
                 </Card>
             </div>
-        </>
+        </AppLayout>
     );
 }

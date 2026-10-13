@@ -29,20 +29,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Novo Documento', href: '/documentos/upload' },
 ];
 
-const tiposDocumentais = [
-    'Processo Administrativo',
-    'Contrato',
-    'Nota Fiscal',
-    'Ofício',
-    'Memorando',
-    'Portaria',
-    'Resolução',
-    'Ata de Reunião',
-    'Relatório',
-    'Outros',
-];
+interface TTD {
+    id: number;
+    tipo_documental: string;
+    prazo_guarda_corrente: number;
+    prazo_guarda_intermediaria: number;
+    destinacao_final: 'GUARDA_PERMANENTE' | 'ELIMINACAO';
+}
 
-export default function Upload() {
+interface Props {
+    ttds: TTD[];
+}
+
+export default function Upload({ ttds }: Props) {
     const [arquivo, setArquivo] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -55,7 +54,7 @@ export default function Upload() {
         assunto: '',
         data_emissao_original_papel: '',
         localizacao_fisica_original: '',
-        tipo_documental: '',
+        tabela_temporalidade_id: '', // ← MUDOU
         operador_responsavel_cpf: '',
         operador_responsavel_nome: '',
         equipamento_scanner: '',
@@ -132,7 +131,7 @@ export default function Upload() {
             formData.append('assunto', data.assunto);
             formData.append('data_emissao_original_papel', data.data_emissao_original_papel);
             formData.append('localizacao_fisica_original', data.localizacao_fisica_original);
-            formData.append('tipo_documental', data.tipo_documental);
+            formData.append('tabela_temporalidade_id', data.tabela_temporalidade_id);
             formData.append('operador_responsavel_cpf', data.operador_responsavel_cpf);
             formData.append('operador_responsavel_nome', data.operador_responsavel_nome);
             formData.append('equipamento_scanner', data.equipamento_scanner);
@@ -153,55 +152,55 @@ export default function Upload() {
             });
 
             if (response.data.success) {
-            setProgress(100);
-            toast.success('Documento digitalizado com sucesso!', {
-                description: `Título: ${response.data.documento?.titulo}`,
-            });
-            setTimeout(() => {
-                window.location.href = '/documentos';
-            }, 1000);
-        }
+                setProgress(100);
+                toast.success('Documento digitalizado com sucesso!', {
+                    description: `Título: ${response.data.documento?.titulo}`,
+                });
+                setTimeout(() => {
+                    window.location.href = '/documentos';
+                }, 1000);
+            }
         } catch (error: any) {
             setProcessing(false);
             setProgress(null);
 
-        if (error.response?.status === 422) {
-            setErrors(error.response.data.errors || {});
-            toast.error('Erro de validação', {
-                description: 'Corrija os campos destacados em vermelho.',
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (error.response?.status === 401) {
-            toast.error('Sessão expirada', {
-                description: 'Faça login novamente.',
-            });
-            setErrors({ geral: ['Sessão expirada. Faça login novamente.'] });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (error.response?.status === 419) {
-            toast.error('Sessão expirada (CSRF)', {
-                description: 'Recarregue a página.',
-            });
-            setErrors({ geral: ['Sessão expirada (CSRF). Recarregue a página.'] });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            toast.error('Erro no upload', {
-                description: error.response?.data?.message || 'Tente novamente.',
-            });
-            setErrors({
-                geral: [
-                    error.response?.data?.message ||
-                        'Erro ao processar o upload. Tente novamente.',
-                ],
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            if (error.response?.status === 422) {
+                setErrors(error.response.data.errors || {});
+                toast.error('Erro de validação', {
+                    description: 'Corrija os campos destacados em vermelho.',
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (error.response?.status === 401) {
+                toast.error('Sessão expirada', {
+                    description: 'Faça login novamente.',
+                });
+                setErrors({ geral: ['Sessão expirada. Faça login novamente.'] });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (error.response?.status === 419) {
+                toast.error('Sessão expirada (CSRF)', {
+                    description: 'Recarregue a página.',
+                });
+                setErrors({ geral: ['Sessão expirada (CSRF). Recarregue a página.'] });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                toast.error('Erro no upload', {
+                    description: error.response?.data?.message || 'Tente novamente.',
+                });
+                setErrors({
+                    geral: [
+                        error.response?.data?.message ||
+                            'Erro ao processar o upload. Tente novamente.',
+                    ],
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         } finally {
             setProcessing(false);
         }
     };
 
-return (
-    <AppLayout breadcrumbs={breadcrumbs}>
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Novo Documento" />
 
             <div className="flex h-full flex-1 flex-col gap-4 p-4 max-w-5xl mx-auto">
@@ -214,13 +213,36 @@ return (
                     </p>
                 </div>
 
+                {/* Alerta: nenhuma TTD cadastrada */}
+                {ttds.length === 0 && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle className="h-5 w-5 text-yellow-700 flex-shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                                <h3 className="text-yellow-800 font-semibold mb-1">
+                                    ⚠️ Nenhum tipo documental cadastrado
+                                </h3>
+                                <p className="text-yellow-700 text-sm mb-3">
+                                    Antes de digitalizar documentos, você precisa cadastrar
+                                    pelo menos uma <strong>Tabela de Temporalidade (TTD)</strong>.
+                                </p>
+                                <Link href="/ttd/create">
+                                    <Button size="sm" variant="outline">
+                                        Criar TTD agora
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {Object.keys(errors).length > 0 && (
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                         <div className="flex items-start gap-3">
                             <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                             <div className="flex-1">
                                 <h3 className="text-red-800 font-semibold mb-2">
-                                     Corrija os erros abaixo:
+                                    Corrija os erros abaixo:
                                 </h3>
                                 <ul className="list-disc list-inside text-red-700 text-sm space-y-1">
                                     {Object.entries(errors).map(([campo, mensagens]) => (
@@ -245,26 +267,26 @@ return (
                         </CardHeader>
                         <CardContent>
                             {!arquivo ? (
-                                    <div
-                                        role="button"
-                                        tabIndex={0}
-                                        aria-label="Selecionar arquivo PDF"
-                                        className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
-                                            dragActive
-                                                ? 'border-primary bg-primary/5'
-                                                : 'border-muted-foreground/25 hover:border-primary'
-                                        }`}
-                                        onDragEnter={handleDrag}
-                                        onDragLeave={handleDrag}
-                                        onDragOver={handleDrag}
-                                        onDrop={handleDrop}
-                                        onClick={() => inputRef.current?.click()}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                inputRef.current?.click();
-                                            }
-                                        }}
-                                    >
+                                <div
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label="Selecionar arquivo PDF"
+                                    className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
+                                        dragActive
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted-foreground/25 hover:border-primary'
+                                    }`}
+                                    onDragEnter={handleDrag}
+                                    onDragLeave={handleDrag}
+                                    onDragOver={handleDrag}
+                                    onDrop={handleDrop}
+                                    onClick={() => inputRef.current?.click()}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            inputRef.current?.click();
+                                        }
+                                    }}
+                                >
                                     <UploadIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                                     <p className="text-lg font-medium mb-2">
                                         Arraste o PDF aqui ou clique para selecionar
@@ -338,25 +360,48 @@ return (
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="tipo_documental">Tipo Documental *</Label>
+                                    <Label htmlFor="tabela_temporalidade_id">
+                                        Tipo Documental *
+                                    </Label>
                                     <Select
-                                        value={data.tipo_documental}
+                                        value={data.tabela_temporalidade_id}
                                         onValueChange={(value) =>
-                                            setField('tipo_documental', value)
+                                            setField('tabela_temporalidade_id', value)
                                         }
+                                        disabled={ttds.length === 0}
                                     >
-                                        <SelectTrigger id="tipo_documental">
+                                        <SelectTrigger id="tabela_temporalidade_id">
                                             <SelectValue placeholder="Selecione o tipo" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {tiposDocumentais.map((tipo) => (
-                                                <SelectItem key={tipo} value={tipo}>
-                                                    {tipo}
+                                            {ttds.map((ttd) => (
+                                                <SelectItem
+                                                    key={ttd.id}
+                                                    value={String(ttd.id)}
+                                                >
+                                                    <div className="flex flex-col">
+                                                        <span className="font-medium">
+                                                            {ttd.tipo_documental}
+                                                        </span>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {ttd.prazo_guarda_corrente} anos +{' '}
+                                                            {ttd.prazo_guarda_intermediaria} anos
+                                                            {' • '}
+                                                            {ttd.destinacao_final === 'GUARDA_PERMANENTE'
+                                                                ? '🛡️ Permanente'
+                                                                : '🗑️ Eliminação'}
+                                                        </span>
+                                                    </div>
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <InputError message={errors.tipo_documental?.[0]} />
+                                    <InputError message={errors.tabela_temporalidade_id?.[0]} />
+                                    {ttds.length === 0 && (
+                                        <p className="text-xs text-yellow-600">
+                                            Cadastre uma TTD antes de continuar
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="grid gap-2">
@@ -519,7 +564,10 @@ return (
                                 Cancelar
                             </Button>
                         </Link>
-                        <Button type="submit" disabled={processing || !arquivo}>
+                        <Button
+                            type="submit"
+                            disabled={processing || !arquivo || ttds.length === 0}
+                        >
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             {processing ? 'Enviando...' : 'Digitalizar Documento'}
                         </Button>

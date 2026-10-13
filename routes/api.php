@@ -3,6 +3,7 @@
 use App\Http\Controllers\DocumentoDigitalizadoController;
 use App\Models\DocumentoDigitalizado;
 use App\Models\TrilhaAuditoria;
+use App\Models\TabelaTemporalidade;
 use App\Rules\ValidCpf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,11 +45,14 @@ Route::middleware('auth:sanctum')->group(function () {
                 'assunto' => 'nullable|string',
                 'data_emissao_original_papel' => 'nullable|date',
                 'localizacao_fisica_original' => 'nullable|string|max:255',
-                'tipo_documental' => 'required|string|max:100',
+                'tabela_temporalidade_id' => 'required|integer|exists:tabela_temporalidades,id',
                 'operador_responsavel_cpf' => ['required', 'string', 'max:14', new ValidCpf()],
                 'operador_responsavel_nome' => 'required|string|max:255',
                 'equipamento_scanner' => 'nullable|string|max:100',
                 'destinacao_final' => 'required|in:GUARDA_PERMANENTE,GUARDA_TEMPORARIA',
+            ], [
+                'tabela_temporalidade_id.required' => 'O tipo documental é obrigatório.',
+                'tabela_temporalidade_id.exists' => 'O tipo documental selecionado não existe.',
             ]);
 
             // 1. Pegar o arquivo
@@ -74,13 +78,17 @@ Route::middleware('auth:sanctum')->group(function () {
                 preg_replace('/[^0-9]/', '', $validated['operador_responsavel_cpf'])
             );
 
+            // 5.1. Buscar a TTD
+            $ttd = TabelaTemporalidade::findOrFail($validated['tabela_temporalidade_id']);
+
             // 6. Criar o documento no banco
             $documento = DocumentoDigitalizado::create([
                 'titulo' => $validated['titulo'],
                 'assunto' => $validated['assunto'] ?? null,
                 'data_emissao_original_papel' => $validated['data_emissao_original_papel'] ?? null,
                 'localizacao_fisica_original' => $validated['localizacao_fisica_original'] ?? null,
-                'tipo_documental' => $validated['tipo_documental'],
+                'tipo_documental' => $ttd->tipo_documental,                    // ← Vem da TTD
+                'tabela_temporalidade_id' => $validated['tabela_temporalidade_id'],  // ← ADICIONADO
                 'suporte_original' => 'PAPEL',
                 'caminho_arquivo' => $caminhoSalvo,
                 'hash_sha256' => $hash,
