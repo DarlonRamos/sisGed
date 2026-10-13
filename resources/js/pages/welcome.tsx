@@ -12,7 +12,11 @@ interface WelcomeProps {
     };
 }
 
-export default function Welcome({ auth, laravelVersion, phpVersion }: Readonly<WelcomeProps>) {
+export default function Welcome({
+    auth,
+    laravelVersion,
+    phpVersion,
+}: Readonly<WelcomeProps>) {
     // Verificar se o usuário está logado com segurança
     const isAuthenticated = auth?.user !== undefined && auth?.user !== null;
     const user = isAuthenticated ? auth.user : null;
@@ -20,20 +24,20 @@ export default function Welcome({ auth, laravelVersion, phpVersion }: Readonly<W
     return (
         <>
             <Head title="SisGED" />
-            <div className="bg-background min-h-screen flex flex-col items-center justify-center p-4">
-                <div className="w-full max-w-4xl mx-auto text-center">
-                    <h1 className="text-4xl font-bold mb-4">📁 SisGED</h1>
-                    <p className="text-xl text-muted-foreground mb-8">
+            <div className="bg-background flex min-h-screen flex-col items-center justify-center p-4">
+                <div className="mx-auto w-full max-w-4xl text-center">
+                    <h1 className="mb-4 text-4xl font-bold">📁 SisGED</h1>
+                    <p className="text-muted-foreground mb-8 text-xl">
                         Sistema de Gestão de Documentos Digitalizados
                     </p>
-                    
+
                     {/* Mostrar mensagem diferente se estiver logado */}
                     {isAuthenticated ? (
                         <div className="space-y-4">
                             <p className="text-lg">Bem-vindo, {user?.name}!</p>
-                            <a 
-                                href="/dashboard" 
-                                className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                            <a
+                                href="/dashboard"
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-6 py-3 transition-colors"
                             >
                                 Ir para o Dashboard
                             </a>
@@ -41,16 +45,16 @@ export default function Welcome({ auth, laravelVersion, phpVersion }: Readonly<W
                     ) : (
                         <div className="space-y-4">
                             <p className="text-lg">Bem-vindo ao SisGED</p>
-                            <div className="flex gap-4 justify-center">
-                                <a 
-                                    href="/login" 
-                                    className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                            <div className="flex justify-center gap-4">
+                                <a
+                                    href="/login"
+                                    className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-6 py-3 transition-colors"
                                 >
                                     Login
                                 </a>
-                                <a 
-                                    href="/register" 
-                                    className="inline-flex items-center justify-center px-6 py-3 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 transition-colors"
+                                <a
+                                    href="/register"
+                                    className="bg-secondary text-secondary-foreground hover:bg-secondary/90 inline-flex items-center justify-center rounded-md px-6 py-3 transition-colors"
                                 >
                                     Registrar
                                 </a>
@@ -59,8 +63,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion }: Readonly<W
                     )}
 
                     {/* Informações técnicas */}
-                    <div className="mt-12 text-sm text-muted-foreground">
-                        <p>Laravel v{laravelVersion} | PHP v{phpVersion} | React 19</p>
+                    <div className="text-muted-foreground mt-12 text-sm">
+                        <p>
+                            Laravel v{laravelVersion} | PHP v{phpVersion} |
+                            React 19
+                        </p>
                     </div>
                 </div>
             </div>

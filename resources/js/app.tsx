@@ -12,29 +12,20 @@ import './bootstrap';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-function AppWrapper({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+function AppWrapper({ children }: { children: React.ReactNode }) {
     useFlashToast();
 
     return (
         <TooltipProvider delayDuration={0}>
             {children}
 
-            <Toaster
-                position="top-right"
-                richColors
-                closeButton
-            />
+            <Toaster position="top-right" richColors closeButton />
         </TooltipProvider>
     );
 }
 
 void createInertiaApp({
-    title: (title) =>
-        title ? `${title} - ${appName}` : appName,
+    title: (title) => (title ? `${title} - ${appName}` : appName),
 
     layout: (name) => {
         switch (true) {

@@ -1,5 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import { Upload as UploadIcon, FileText, X, CheckCircle2, AlertCircle } from 'lucide-react';
+import {
+    Upload as UploadIcon,
+    FileText,
+    X,
+    CheckCircle2,
+    AlertCircle,
+} from 'lucide-react';
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
@@ -129,27 +135,47 @@ export default function Upload({ ttds }: Props) {
             formData.append('arquivo', arquivo);
             formData.append('titulo', data.titulo);
             formData.append('assunto', data.assunto);
-            formData.append('data_emissao_original_papel', data.data_emissao_original_papel);
-            formData.append('localizacao_fisica_original', data.localizacao_fisica_original);
-            formData.append('tabela_temporalidade_id', data.tabela_temporalidade_id);
-            formData.append('operador_responsavel_cpf', data.operador_responsavel_cpf);
-            formData.append('operador_responsavel_nome', data.operador_responsavel_nome);
+            formData.append(
+                'data_emissao_original_papel',
+                data.data_emissao_original_papel,
+            );
+            formData.append(
+                'localizacao_fisica_original',
+                data.localizacao_fisica_original,
+            );
+            formData.append(
+                'tabela_temporalidade_id',
+                data.tabela_temporalidade_id,
+            );
+            formData.append(
+                'operador_responsavel_cpf',
+                data.operador_responsavel_cpf,
+            );
+            formData.append(
+                'operador_responsavel_nome',
+                data.operador_responsavel_nome,
+            );
             formData.append('equipamento_scanner', data.equipamento_scanner);
             formData.append('destinacao_final', data.destinacao_final);
 
-            const response = await axios.post('/api/documentos/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
+            const response = await axios.post(
+                '/api/documentos/upload',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        if (progressEvent.total) {
+                            const percentage = Math.round(
+                                (progressEvent.loaded * 100) /
+                                    progressEvent.total,
+                            );
+                            setProgress(percentage);
+                        }
+                    },
                 },
-                onUploadProgress: (progressEvent) => {
-                    if (progressEvent.total) {
-                        const percentage = Math.round(
-                            (progressEvent.loaded * 100) / progressEvent.total
-                        );
-                        setProgress(percentage);
-                    }
-                },
-            });
+            );
 
             if (response.data.success) {
                 setProgress(100);
@@ -174,17 +200,22 @@ export default function Upload({ ttds }: Props) {
                 toast.error('Sessão expirada', {
                     description: 'Faça login novamente.',
                 });
-                setErrors({ geral: ['Sessão expirada. Faça login novamente.'] });
+                setErrors({
+                    geral: ['Sessão expirada. Faça login novamente.'],
+                });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (error.response?.status === 419) {
                 toast.error('Sessão expirada (CSRF)', {
                     description: 'Recarregue a página.',
                 });
-                setErrors({ geral: ['Sessão expirada (CSRF). Recarregue a página.'] });
+                setErrors({
+                    geral: ['Sessão expirada (CSRF). Recarregue a página.'],
+                });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 toast.error('Erro no upload', {
-                    description: error.response?.data?.message || 'Tente novamente.',
+                    description:
+                        error.response?.data?.message || 'Tente novamente.',
                 });
                 setErrors({
                     geral: [
@@ -203,28 +234,33 @@ export default function Upload({ ttds }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Novo Documento" />
 
-            <div className="flex h-full flex-1 flex-col gap-4 p-4 max-w-5xl mx-auto">
+            <div className="mx-auto flex h-full max-w-5xl flex-1 flex-col gap-4 p-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
                         📄 Digitalizar Documento
                     </h1>
                     <p className="text-muted-foreground">
-                        Faça upload do documento físico digitalizado e preencha os metadados
+                        Faça upload do documento físico digitalizado e preencha
+                        os metadados
                     </p>
                 </div>
 
                 {/* Alerta: nenhuma TTD cadastrada */}
                 {ttds.length === 0 && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                         <div className="flex items-start gap-3">
-                            <AlertCircle className="h-5 w-5 text-yellow-700 flex-shrink-0 mt-0.5" />
+                            <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-700" />
                             <div className="flex-1">
-                                <h3 className="text-yellow-800 font-semibold mb-1">
+                                <h3 className="mb-1 font-semibold text-yellow-800">
                                     ⚠️ Nenhum tipo documental cadastrado
                                 </h3>
-                                <p className="text-yellow-700 text-sm mb-3">
-                                    Antes de digitalizar documentos, você precisa cadastrar
-                                    pelo menos uma <strong>Tabela de Temporalidade (TTD)</strong>.
+                                <p className="mb-3 text-sm text-yellow-700">
+                                    Antes de digitalizar documentos, você
+                                    precisa cadastrar pelo menos uma{' '}
+                                    <strong>
+                                        Tabela de Temporalidade (TTD)
+                                    </strong>
+                                    .
                                 </p>
                                 <Link href="/ttd/create">
                                     <Button size="sm" variant="outline">
@@ -237,22 +273,24 @@ export default function Upload({ ttds }: Props) {
                 )}
 
                 {Object.keys(errors).length > 0 && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                         <div className="flex items-start gap-3">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                            <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
                             <div className="flex-1">
-                                <h3 className="text-red-800 font-semibold mb-2">
+                                <h3 className="mb-2 font-semibold text-red-800">
                                     Corrija os erros abaixo:
                                 </h3>
-                                <ul className="list-disc list-inside text-red-700 text-sm space-y-1">
-                                    {Object.entries(errors).map(([campo, mensagens]) => (
-                                        <li key={campo}>
-                                            <strong>{campo}:</strong>{' '}
-                                            {Array.isArray(mensagens)
-                                                ? mensagens.join(', ')
-                                                : mensagens}
-                                        </li>
-                                    ))}
+                                <ul className="list-inside list-disc space-y-1 text-sm text-red-700">
+                                    {Object.entries(errors).map(
+                                        ([campo, mensagens]) => (
+                                            <li key={campo}>
+                                                <strong>{campo}:</strong>{' '}
+                                                {Array.isArray(mensagens)
+                                                    ? mensagens.join(', ')
+                                                    : mensagens}
+                                            </li>
+                                        ),
+                                    )}
                                 </ul>
                             </div>
                         </div>
@@ -263,7 +301,9 @@ export default function Upload({ ttds }: Props) {
                     <Card>
                         <CardHeader>
                             <CardTitle>1. Arquivo Digitalizado</CardTitle>
-                            <CardDescription>Formatos aceitos: PDF (máximo 50 MB)</CardDescription>
+                            <CardDescription>
+                                Formatos aceitos: PDF (máximo 50 MB)
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             {!arquivo ? (
@@ -271,7 +311,7 @@ export default function Upload({ ttds }: Props) {
                                     role="button"
                                     tabIndex={0}
                                     aria-label="Selecionar arquivo PDF"
-                                    className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
+                                    className={`cursor-pointer rounded-lg border-2 border-dashed p-12 text-center transition-colors ${
                                         dragActive
                                             ? 'border-primary bg-primary/5'
                                             : 'border-muted-foreground/25 hover:border-primary'
@@ -282,17 +322,22 @@ export default function Upload({ ttds }: Props) {
                                     onDrop={handleDrop}
                                     onClick={() => inputRef.current?.click()}
                                     onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
                                             inputRef.current?.click();
                                         }
                                     }}
                                 >
-                                    <UploadIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                    <p className="text-lg font-medium mb-2">
-                                        Arraste o PDF aqui ou clique para selecionar
+                                    <UploadIcon className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                                    <p className="mb-2 text-lg font-medium">
+                                        Arraste o PDF aqui ou clique para
+                                        selecionar
                                     </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Resolução mínima: 300 DPI | Formato: PDF/A
+                                    <p className="text-muted-foreground text-sm">
+                                        Resolução mínima: 300 DPI | Formato:
+                                        PDF/A
                                     </p>
                                     <input
                                         ref={inputRef}
@@ -303,12 +348,19 @@ export default function Upload({ ttds }: Props) {
                                     />
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-4 p-4 border rounded-lg">
-                                    <FileText className="h-10 w-10 text-primary" />
+                                <div className="flex items-center gap-4 rounded-lg border p-4">
+                                    <FileText className="text-primary h-10 w-10" />
                                     <div className="flex-1">
-                                        <p className="font-medium">{arquivo.name}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {(arquivo.size / 1024 / 1024).toFixed(2)} MB
+                                        <p className="font-medium">
+                                            {arquivo.name}
+                                        </p>
+                                        <p className="text-muted-foreground text-sm">
+                                            {(
+                                                arquivo.size /
+                                                1024 /
+                                                1024
+                                            ).toFixed(2)}{' '}
+                                            MB
                                         </p>
                                     </div>
                                     <Button
@@ -321,7 +373,10 @@ export default function Upload({ ttds }: Props) {
                                     </Button>
                                 </div>
                             )}
-                            <InputError message={errors.arquivo?.[0]} className="mt-2" />
+                            <InputError
+                                message={errors.arquivo?.[0]}
+                                className="mt-2"
+                            />
                         </CardContent>
                     </Card>
 
@@ -329,17 +384,22 @@ export default function Upload({ ttds }: Props) {
                         <CardHeader>
                             <CardTitle>2. Metadados do Documento</CardTitle>
                             <CardDescription>
-                                Informações obrigatórias conforme Decreto 10.278/2020
+                                Informações obrigatórias conforme Decreto
+                                10.278/2020
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="titulo">Título do Documento *</Label>
+                                <Label htmlFor="titulo">
+                                    Título do Documento *
+                                </Label>
                                 <Input
                                     id="titulo"
                                     name="titulo"
                                     value={data.titulo}
-                                    onChange={(e) => setField('titulo', e.target.value)}
+                                    onChange={(e) =>
+                                        setField('titulo', e.target.value)
+                                    }
                                     placeholder="Ex: Processo de Licitação nº 045/2018"
                                     required
                                 />
@@ -347,12 +407,16 @@ export default function Upload({ ttds }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="assunto">Assunto / Descrição</Label>
+                                <Label htmlFor="assunto">
+                                    Assunto / Descrição
+                                </Label>
                                 <Input
                                     id="assunto"
                                     name="assunto"
                                     value={data.assunto}
-                                    onChange={(e) => setField('assunto', e.target.value)}
+                                    onChange={(e) =>
+                                        setField('assunto', e.target.value)
+                                    }
                                     placeholder="Ex: Aquisição de Equipamentos de Informática"
                                 />
                                 <InputError message={errors.assunto?.[0]} />
@@ -366,7 +430,10 @@ export default function Upload({ ttds }: Props) {
                                     <Select
                                         value={data.tabela_temporalidade_id}
                                         onValueChange={(value) =>
-                                            setField('tabela_temporalidade_id', value)
+                                            setField(
+                                                'tabela_temporalidade_id',
+                                                value,
+                                            )
                                         }
                                         disabled={ttds.length === 0}
                                     >
@@ -381,13 +448,22 @@ export default function Upload({ ttds }: Props) {
                                                 >
                                                     <div className="flex flex-col">
                                                         <span className="font-medium">
-                                                            {ttd.tipo_documental}
+                                                            {
+                                                                ttd.tipo_documental
+                                                            }
                                                         </span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {ttd.prazo_guarda_corrente} anos +{' '}
-                                                            {ttd.prazo_guarda_intermediaria} anos
+                                                        <span className="text-muted-foreground text-xs">
+                                                            {
+                                                                ttd.prazo_guarda_corrente
+                                                            }{' '}
+                                                            anos +{' '}
+                                                            {
+                                                                ttd.prazo_guarda_intermediaria
+                                                            }{' '}
+                                                            anos
                                                             {' • '}
-                                                            {ttd.destinacao_final === 'GUARDA_PERMANENTE'
+                                                            {ttd.destinacao_final ===
+                                                            'GUARDA_PERMANENTE'
                                                                 ? '🛡️ Permanente'
                                                                 : '🗑️ Eliminação'}
                                                         </span>
@@ -396,7 +472,11 @@ export default function Upload({ ttds }: Props) {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <InputError message={errors.tabela_temporalidade_id?.[0]} />
+                                    <InputError
+                                        message={
+                                            errors.tabela_temporalidade_id?.[0]
+                                        }
+                                    />
                                     {ttds.length === 0 && (
                                         <p className="text-xs text-yellow-600">
                                             Cadastre uma TTD antes de continuar
@@ -416,12 +496,15 @@ export default function Upload({ ttds }: Props) {
                                         onChange={(e) =>
                                             setField(
                                                 'data_emissao_original_papel',
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                     />
                                     <InputError
-                                        message={errors.data_emissao_original_papel?.[0]}
+                                        message={
+                                            errors
+                                                .data_emissao_original_papel?.[0]
+                                        }
                                     />
                                 </div>
                             </div>
@@ -435,17 +518,24 @@ export default function Upload({ ttds }: Props) {
                                     name="localizacao_fisica_original"
                                     value={data.localizacao_fisica_original}
                                     onChange={(e) =>
-                                        setField('localizacao_fisica_original', e.target.value)
+                                        setField(
+                                            'localizacao_fisica_original',
+                                            e.target.value,
+                                        )
                                     }
                                     placeholder="Ex: Arquivo Central – Estante B – Caixas 12 a 15"
                                 />
                                 <InputError
-                                    message={errors.localizacao_fisica_original?.[0]}
+                                    message={
+                                        errors.localizacao_fisica_original?.[0]
+                                    }
                                 />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="destinacao_final">Destinação Final *</Label>
+                                <Label htmlFor="destinacao_final">
+                                    Destinação Final *
+                                </Label>
                                 <Select
                                     value={data.destinacao_final}
                                     onValueChange={(value) =>
@@ -457,21 +547,26 @@ export default function Upload({ ttds }: Props) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="GUARDA_TEMPORARIA">
-                                            Guarda Temporária (pode ser eliminado após prazo)
+                                            Guarda Temporária (pode ser
+                                            eliminado após prazo)
                                         </SelectItem>
                                         <SelectItem value="GUARDA_PERMANENTE">
                                             Guarda Permanente (nunca eliminar)
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError message={errors.destinacao_final?.[0]} />
+                                <InputError
+                                    message={errors.destinacao_final?.[0]}
+                                />
                             </div>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>3. Responsável pela Digitalização</CardTitle>
+                            <CardTitle>
+                                3. Responsável pela Digitalização
+                            </CardTitle>
                             <CardDescription>
                                 Dados do operador que realizou a digitalização
                             </CardDescription>
@@ -489,38 +584,58 @@ export default function Upload({ ttds }: Props) {
                                         onChange={(e) =>
                                             setField(
                                                 'operador_responsavel_nome',
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         placeholder="Ex: Carlos Eduardo M. Silva"
                                         required
                                     />
                                     <InputError
-                                        message={errors.operador_responsavel_nome?.[0]}
+                                        message={
+                                            errors
+                                                .operador_responsavel_nome?.[0]
+                                        }
                                     />
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="operador_responsavel_cpf">CPF *</Label>
+                                    <Label htmlFor="operador_responsavel_cpf">
+                                        CPF *
+                                    </Label>
                                     <Input
                                         id="operador_responsavel_cpf"
                                         name="operador_responsavel_cpf"
                                         value={data.operador_responsavel_cpf}
                                         onChange={(e) => {
-                                            const numeros = e.target.value.replace(/\D/g, '');
-                                            const limitado = numeros.slice(0, 11);
+                                            const numeros =
+                                                e.target.value.replace(
+                                                    /\D/g,
+                                                    '',
+                                                );
+                                            const limitado = numeros.slice(
+                                                0,
+                                                11,
+                                            );
                                             const formatado = limitado
                                                 .replace(/(\d{3})(\d)/, '$1.$2')
                                                 .replace(/(\d{3})(\d)/, '$1.$2')
-                                                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                                            setField('operador_responsavel_cpf', formatado);
+                                                .replace(
+                                                    /(\d{3})(\d{1,2})$/,
+                                                    '$1-$2',
+                                                );
+                                            setField(
+                                                'operador_responsavel_cpf',
+                                                formatado,
+                                            );
                                         }}
                                         placeholder="000.000.000-00"
                                         maxLength={14}
                                         required
                                     />
                                     <InputError
-                                        message={errors.operador_responsavel_cpf?.[0]}
+                                        message={
+                                            errors.operador_responsavel_cpf?.[0]
+                                        }
                                     />
                                 </div>
                             </div>
@@ -534,11 +649,16 @@ export default function Upload({ ttds }: Props) {
                                     name="equipamento_scanner"
                                     value={data.equipamento_scanner}
                                     onChange={(e) =>
-                                        setField('equipamento_scanner', e.target.value)
+                                        setField(
+                                            'equipamento_scanner',
+                                            e.target.value,
+                                        )
                                     }
                                     placeholder="Ex: Fujitsu FI-7160"
                                 />
-                                <InputError message={errors.equipamento_scanner?.[0]} />
+                                <InputError
+                                    message={errors.equipamento_scanner?.[0]}
+                                />
                             </div>
                         </CardContent>
                     </Card>
@@ -549,7 +669,7 @@ export default function Upload({ ttds }: Props) {
                                 <span>Enviando documento...</span>
                                 <span>{progress}%</span>
                             </div>
-                            <div className="w-full bg-secondary rounded-full h-2">
+                            <div className="bg-secondary h-2 w-full rounded-full">
                                 <div
                                     className="bg-primary h-2 rounded-full transition-all"
                                     style={{ width: `${progress}%` }}
@@ -566,10 +686,14 @@ export default function Upload({ ttds }: Props) {
                         </Link>
                         <Button
                             type="submit"
-                            disabled={processing || !arquivo || ttds.length === 0}
+                            disabled={
+                                processing || !arquivo || ttds.length === 0
+                            }
                         >
                             <CheckCircle2 className="mr-2 h-4 w-4" />
-                            {processing ? 'Enviando...' : 'Digitalizar Documento'}
+                            {processing
+                                ? 'Enviando...'
+                                : 'Digitalizar Documento'}
                         </Button>
                     </div>
                 </form>

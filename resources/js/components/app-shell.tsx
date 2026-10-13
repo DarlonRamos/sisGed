@@ -16,23 +16,16 @@ export function AppShell({ children, variant = 'sidebar' }: Props) {
     // o comportamento do SidebarProvider determinístico.
     const { sidebarOpen } = usePage().props;
 
-    const [open, setOpen] = useState<boolean>(
-        () => sidebarOpen ?? true,
-    );
+    const [open, setOpen] = useState<boolean>(() => sidebarOpen ?? true);
 
     if (variant === 'header') {
         return (
-            <div className="flex min-h-screen w-full flex-col">
-                {children}
-            </div>
+            <div className="flex min-h-screen w-full flex-col">{children}</div>
         );
     }
 
     return (
-        <SidebarProvider
-            open={open}
-            onOpenChange={setOpen}
-        >
+        <SidebarProvider open={open} onOpenChange={setOpen}>
             {children}
         </SidebarProvider>
     );

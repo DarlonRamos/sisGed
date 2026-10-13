@@ -18,7 +18,7 @@ export default defineConfig({
                 }),
             ],
         }),
-        inertia({ ssr: false }),  // ← DESABILITAR SSR AQUI
+        inertia({ ssr: false }), // ← DESABILITAR SSR AQUI
         react(),
         babel({
             presets: [reactCompilerPreset()],
@@ -29,13 +29,13 @@ export default defineConfig({
         }),
     ]),
     server: {
-    host: 'localhost',
-    port: 5173,
-    strictPort: false,
-    hmr: {
         host: 'localhost',
-    },
-    watch: {
+        port: 5173,
+        strictPort: false,
+        hmr: {
+            host: 'localhost',
+        },
+        watch: {
             ignored: [
                 '**/.agents/**',
                 '**/.claude/**',

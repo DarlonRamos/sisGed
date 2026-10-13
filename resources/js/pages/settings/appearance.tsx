@@ -17,14 +17,14 @@ export default function Appearance() {
                     description="Personalize a aparência do sistema"
                 />
 
-                <div className="rounded-lg border bg-card p-6">
+                <div className="bg-card rounded-lg border p-6">
                     <div className="mb-4 flex items-center gap-3">
-                        <div className="rounded-md bg-primary/10 p-2">
-                            <Palette className="h-5 w-5 text-primary" />
+                        <div className="bg-primary/10 rounded-md p-2">
+                            <Palette className="text-primary h-5 w-5" />
                         </div>
                         <div>
                             <h3 className="text-base font-medium">Tema</h3>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                                 Escolha entre claro, escuro ou automático
                             </p>
                         </div>

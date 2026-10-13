@@ -47,28 +47,31 @@ O **SisGED** é uma solução standalone para digitalização, indexação, arma
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
-| Tecnologia | Versão | Descrição |
-|------------|--------|-----------|
-| **Laravel** | 13.x | Framework PHP |
-| **PHP** | 8.3+ / 8.4+ | Linguagem de programação |
-| **Laravel Sanctum** | ^4.0 | Autenticação API |
-| **Laravel Fortify** | ^1.0 | Autenticação web |
-| **SQLite** | 3.x | Banco de dados (desenvolvimento) |
-| **spatie/laravel-permission** | ^6.0 | RBAC (Controle de Acesso) |
+
+| Tecnologia                    | Versão      | Descrição                        |
+| ----------------------------- | ----------- | -------------------------------- |
+| **Laravel**                   | 13.x        | Framework PHP                    |
+| **PHP**                       | 8.3+ / 8.4+ | Linguagem de programação         |
+| **Laravel Sanctum**           | ^4.0        | Autenticação API                 |
+| **Laravel Fortify**           | ^1.0        | Autenticação web                 |
+| **SQLite**                    | 3.x         | Banco de dados (desenvolvimento) |
+| **spatie/laravel-permission** | ^6.0        | RBAC (Controle de Acesso)        |
 
 ### Frontend
-| Tecnologia | Versão | Descrição |
-|------------|--------|-----------|
-| **React** | 19.2.0 | Biblioteca UI |
-| **Inertia.js** | 3.0.0 | SPA sem API separada |
-| **TypeScript** | 5.7.2 | Tipagem estática |
-| **Tailwind CSS** | 4.0.0 | Framework CSS |
-| **Shadcn/ui** | - | Componentes UI |
-| **Radix UI** | - | Componentes acessíveis |
-| **Vite** | 8.0.0 | Build tool |
-| **Lucide React** | 0.475.0 | Ícones |
+
+| Tecnologia       | Versão  | Descrição              |
+| ---------------- | ------- | ---------------------- |
+| **React**        | 19.2.0  | Biblioteca UI          |
+| **Inertia.js**   | 3.0.0   | SPA sem API separada   |
+| **TypeScript**   | 5.7.2   | Tipagem estática       |
+| **Tailwind CSS** | 4.0.0   | Framework CSS          |
+| **Shadcn/ui**    | -       | Componentes UI         |
+| **Radix UI**     | -       | Componentes acessíveis |
+| **Vite**         | 8.0.0   | Build tool             |
+| **Lucide React** | 0.475.0 | Ícones                 |
 
 ### Ferramentas de Desenvolvimento
+
 - **Composer** - Gerenciador de dependências PHP
 - **NPM** - Gerenciador de dependências Node
 - **Vite** - Build tool e dev server
@@ -79,7 +82,6 @@ O **SisGED** é uma solução standalone para digitalização, indexação, arma
 ## 🏗️ Arquitetura
 
 ### Visão Geral
-
 
 ### Camadas do Sistema
 
@@ -149,7 +151,6 @@ sisged/
 ├── package.json # Dependências Node
 └── README.md # Este arquivo
 
-
 ---
 
 ## 🔧 Instalação
@@ -198,6 +199,7 @@ composer run dev
 ```
 
 ## Acesse a aplicação
+
 Frontend: http://localhost:8000
 
 API: http://localhost:8000/api
@@ -229,27 +231,30 @@ SANCTUM_STATEFUL_DOMAINS=localhost:8000
 SESSION_DOMAIN=localhost
 
 ```
+
 ## 📡 API Endpoints
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| **POST** | /api/login | Login (retorna token)|
-| **POST** | /api/logout| Logout|
-| **GET** | /api/user| Dados do usuário logado|
+
+| Método   | Endpoint    | Descrição               |
+| -------- | ----------- | ----------------------- |
+| **POST** | /api/login  | Login (retorna token)   |
+| **POST** | /api/logout | Logout                  |
+| **GET**  | /api/user   | Dados do usuário logado |
 
 ## Documentos
 
-|Método| Endpoint| Descrição|
-|------|---------|----------|
-|**GET**|/api/documentos| Lista documentos (paginado)|
-|**POST**|/api/documentos|	Upload de novo documento|
-|**GET**|/api/documentos/{id}|	Visualizar documento|
-|**GET**|/api/documentos/{id}/download|	Baixar arquivo|
-|**GET**|/api/documentos/{id}/verificar|	Verificar integridade|
+| Método   | Endpoint                       | Descrição                   |
+| -------- | ------------------------------ | --------------------------- |
+| **GET**  | /api/documentos                | Lista documentos (paginado) |
+| **POST** | /api/documentos                | Upload de novo documento    |
+| **GET**  | /api/documentos/{id}           | Visualizar documento        |
+| **GET**  | /api/documentos/{id}/download  | Baixar arquivo              |
+| **GET**  | /api/documentos/{id}/verificar | Verificar integridade       |
 
---------------
+---
 
 POST /api/documentos
 ---
+
 **Authorization:** Bearer {token}
 
 **Content-Type:** multipart/form-data
@@ -276,12 +281,15 @@ POST /api/documentos
 ##GET /api/documentos?page=1&per_page=15
 ##Authorization: Bearer {token}
 ```
+
 ## <span style="color: #a8efff">Autenticação</span>
 
 **1. Crie um usuário (se não tiver):**
+
 ```bash
 php artisan tinker
 ```
+
 ```bash
 App\Models\User::create([
     'name' => 'Admin',
@@ -289,28 +297,36 @@ App\Models\User::create([
     'password' => bcrypt('password123')
 ]);
 ```
+
 **2. Gere um token:**
+
 ```bash
 $user = App\Models\User::first();
 $user->createToken('api-token')->plainTextToken;
 ```
+
 **3. Use nos headers:**
+
 ```bash
 Authorization: Bearer {seu_token}
 ```
 
 ## Login via Interface Web
+
 - Acesse http://localhost:8000/login
 
 - Use o email e senha cadastrados
 
 ## Testes
+
 ### Testes Unitários
+
 ```bash
 php artisan test
 ```
 
 ## Testar API com Postman
+
 1.Importe a coleção (disponível na pasta /postman)
 
 2.Configure as variáveis de ambiente
@@ -318,13 +334,16 @@ php artisan test
 3.Execute os testes
 
 ## Testar Comandos Artisan
+
 ```bash
 # Verificar integridade de todos os documentos
 php artisan documentos:verificar-integridade
 ```
 
 ## ✅ Funcionalidades Implementadas
+
 **Fase 1 - Core Backend ✅**
+
 - Laravel 13 com PHP 8.3+
 - Autenticação Sanctum (API + Web)
 - Modelos e Migrações
@@ -332,47 +351,57 @@ php artisan documentos:verificar-integridade
 - Rotas API protegidas
 
 **Fase 2 - Digitalização e Metadados ✅**
+
 - Upload de arquivos PDF/A
 - Cálculo de Hash SHA-256
 - Validação de metadados (Decreto 10.278/2020)
 - Armazenamento seguro de documentos
 
 **Fase 3 - Auditoria ✅**
+
 - Trilha de auditoria imutável
 - Registro de ações (CRIOU, VISUALIZOU, BAIXOU)
 - IP e user-agent de origem
 
 **Fase 4 - Integridade ✅**
+
 - Comando de verificação periódica
 - Verificação individual de documentos
 - Alertas de integridade comprometida
 
 ## Próximos Passos
+
 **Fase 5 - Frontend React**
+
 - Página de upload com drag & drop
 - Listagem de documentos
 - Visualização de detalhes
 - Interface de busca
 
 **Fase 6 - TTD (Tabela de Temporalidade)**
+
 - CRUD de tabelas de temporalidade
 - Vinculação de documentos à TTD
 - Workflow de eliminação
 
 **Fase 7 - Assinatura Digital**
+
 - Integração com Web PKI
 - Certificado ICP-Brasil (A1/A3)
 - Assinatura PAdES
 
 **Fase 8 - Multi-Tenant**
+
 - Isolamento por tenant
 - Subdomínios dinâmicos
 - Segregação de storage
 
 **Fase 9 - Portal LAI**
+
 - Busca pública
 - Download de cópias autenticadas
 - Transparência ativa
+
 ---
 
 🧪 Testar a auditoria
@@ -390,12 +419,12 @@ Deve aparecer:
 
 text
 = App\Models\TrilhaAuditoria {
-    id: 5,
-    documento_digitalizado_id: 3,
-    usuario_id: 1,
-    acao: "VISUALIZOU",
-    ...
-  }
+id: 5,
+documento_digitalizado_id: 3,
+usuario_id: 1,
+acao: "VISUALIZOU",
+...
+}
 
 ✅ O que você conquistou até agora
 Backend Laravel 13
@@ -459,13 +488,13 @@ CI/CD (GitHub Actions)
 Documentação da API (Swagger)
 
 📊 Status do projeto
-Fase	Status
-Fase 1 - Core Backend	✅ Completo
-Fase 2 - Digitalização e Metadados	✅ Completo
-Fase 3 - Auditoria	✅ Completo
-Fase 4 - Integridade	✅ Completo
-Fase 5 - Frontend React	🟢 80% completo
-Fase 6 - TTD	⏳ Pendente
-Fase 7 - Assinatura Digital	⏳ Pendente
-Fase 8 - Multi-Tenant	⏳ Pendente
-Fase 9 - Portal LAI	⏳ Pendente
+Fase Status
+Fase 1 - Core Backend ✅ Completo
+Fase 2 - Digitalização e Metadados ✅ Completo
+Fase 3 - Auditoria ✅ Completo
+Fase 4 - Integridade ✅ Completo
+Fase 5 - Frontend React 🟢 80% completo
+Fase 6 - TTD ⏳ Pendente
+Fase 7 - Assinatura Digital ⏳ Pendente
+Fase 8 - Multi-Tenant ⏳ Pendente
+Fase 9 - Portal LAI ⏳ Pendente

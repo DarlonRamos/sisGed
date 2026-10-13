@@ -9,7 +9,7 @@ export function AppSidebarHeader({
     breadcrumbs?: BreadcrumbItemType[];
 }>) {
     return (
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
+        <header className="bg-background flex h-16 shrink-0 items-center gap-2 border-b px-4">
             {/*
              * ÚNICO SidebarTrigger do sistema.
              *
@@ -18,10 +18,7 @@ export function AppSidebarHeader({
              */}
             <SidebarTrigger className="-ml-1" />
 
-            <Separator
-                orientation="vertical"
-                className="mr-2 h-4"
-            />
+            <Separator orientation="vertical" className="mr-2 h-4" />
 
             <Breadcrumbs breadcrumbs={breadcrumbs} />
         </header>

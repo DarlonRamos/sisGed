@@ -61,7 +61,8 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
     const formatarTamanho = (bytes: number) => {
         if (bytes < 1024) return bytes + ' B';
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
-        if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        if (bytes < 1024 * 1024 * 1024)
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
         return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
     };
 
@@ -78,10 +79,11 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
     const totalDigitalizados = stats.por_status['DIGITALIZADO'] || 0;
     const totalAssinados = stats.por_status['ASSINADO'] || 0;
     const totalEliminados = stats.por_status['ELIMINADO'] || 0;
-    const totalGuardaPermanente = stats.por_destinacao['GUARDA_PERMANENTE'] || 0;
+    const totalGuardaPermanente =
+        stats.por_destinacao['GUARDA_PERMANENTE'] || 0;
 
-   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
 
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
@@ -89,7 +91,7 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                             Dashboard
+                            Dashboard
                         </h1>
                         <p className="text-muted-foreground">
                             Visão geral do acervo documental digitalizado
@@ -110,11 +112,13 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                             <CardTitle className="text-sm font-medium">
                                 Total de Documentos
                             </CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            <FileText className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold">{stats.total}</div>
-                            <p className="text-xs text-muted-foreground">
+                            <div className="text-3xl font-bold">
+                                {stats.total}
+                            </div>
+                            <p className="text-muted-foreground text-xs">
                                 Documentos no acervo
                             </p>
                         </CardContent>
@@ -131,7 +135,7 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                             <div className="text-3xl font-bold text-blue-600">
                                 {totalDigitalizados}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Prontos para uso
                             </p>
                         </CardContent>
@@ -148,7 +152,7 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                             <div className="text-3xl font-bold text-green-600">
                                 {totalGuardaPermanente}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Documentos históricos
                             </p>
                         </CardContent>
@@ -165,7 +169,7 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                             <div className="text-3xl font-bold text-purple-600">
                                 {formatarTamanho(stats.tamanho_total)}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Espaço utilizado
                             </p>
                         </CardContent>
@@ -184,25 +188,45 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {Object.keys(stats.por_status).length === 0 ? (
-                                <p className="text-sm text-muted-foreground text-center py-4">
+                                <p className="text-muted-foreground py-4 text-center text-sm">
                                     Nenhum documento cadastrado
                                 </p>
                             ) : (
-                                Object.entries(stats.por_status).map(([status, total]) => (
-                                    <div key={status} className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <Badge className={statusColors[status] || ''}>
-                                                {status}
-                                            </Badge>
+                                Object.entries(stats.por_status).map(
+                                    ([status, total]) => (
+                                        <div
+                                            key={status}
+                                            className="flex items-center justify-between"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <Badge
+                                                    className={
+                                                        statusColors[status] ||
+                                                        ''
+                                                    }
+                                                >
+                                                    {status}
+                                                </Badge>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-medium">
+                                                    {total}
+                                                </span>
+                                                <span className="text-muted-foreground text-xs">
+                                                    (
+                                                    {stats.total > 0
+                                                        ? Math.round(
+                                                              (total /
+                                                                  stats.total) *
+                                                                  100,
+                                                          )
+                                                        : 0}
+                                                    %)
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-medium">{total}</span>
-                                            <span className="text-xs text-muted-foreground">
-                                                ({stats.total > 0 ? Math.round((total / stats.total) * 100) : 0}%)
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))
+                                    ),
+                                )
                             )}
                         </CardContent>
                     </Card>
@@ -217,26 +241,32 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {Object.keys(stats.por_tipo).length === 0 ? (
-                                <p className="text-sm text-muted-foreground text-center py-4">
+                                <p className="text-muted-foreground py-4 text-center text-sm">
                                     Nenhum documento cadastrado
                                 </p>
                             ) : (
-                                Object.entries(stats.por_tipo).map(([tipo, total]) => (
-                                    <div key={tipo} className="space-y-2">
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="font-medium">{tipo}</span>
-                                            <span className="text-muted-foreground">{total}</span>
+                                Object.entries(stats.por_tipo).map(
+                                    ([tipo, total]) => (
+                                        <div key={tipo} className="space-y-2">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="font-medium">
+                                                    {tipo}
+                                                </span>
+                                                <span className="text-muted-foreground">
+                                                    {total}
+                                                </span>
+                                            </div>
+                                            <div className="bg-secondary h-2 w-full rounded-full">
+                                                <div
+                                                    className="bg-primary h-2 rounded-full transition-all"
+                                                    style={{
+                                                        width: `${stats.total > 0 ? (total / stats.total) * 100 : 0}%`,
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="w-full bg-secondary rounded-full h-2">
-                                            <div
-                                                className="bg-primary h-2 rounded-full transition-all"
-                                                style={{
-                                                    width: `${stats.total > 0 ? (total / stats.total) * 100 : 0}%`,
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))
+                                    ),
+                                )
                             )}
                         </CardContent>
                     </Card>
@@ -260,8 +290,8 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                     <CardContent>
                         {ultimos_documentos.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-8 text-center">
-                                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-                                <h3 className="text-lg font-semibold mb-2">
+                                <FileText className="text-muted-foreground mb-4 h-12 w-12" />
+                                <h3 className="mb-2 text-lg font-semibold">
                                     Nenhum documento ainda
                                 </h3>
                                 <p className="text-muted-foreground mb-4">
@@ -279,23 +309,37 @@ export default function Dashboard({ stats, ultimos_documentos }: Props) {
                                 {ultimos_documentos.map((doc) => (
                                     <div key={doc.id}>
                                         <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3 flex-1">
-                                                <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-medium truncate">
+                                            <div className="flex flex-1 items-center gap-3">
+                                                <FileText className="text-muted-foreground h-5 w-5 flex-shrink-0" />
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="truncate font-medium">
                                                         {doc.titulo}
                                                     </p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {doc.tipo_documental} • {formatarData(doc.created_at)}
+                                                    <p className="text-muted-foreground text-sm">
+                                                        {doc.tipo_documental} •{' '}
+                                                        {formatarData(
+                                                            doc.created_at,
+                                                        )}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Badge className={statusColors[doc.status] || ''}>
+                                                <Badge
+                                                    className={
+                                                        statusColors[
+                                                            doc.status
+                                                        ] || ''
+                                                    }
+                                                >
                                                     {doc.status}
                                                 </Badge>
-                                                <Link href={`/documentos/${doc.id}`}>
-                                                    <Button variant="ghost" size="sm">
+                                                <Link
+                                                    href={`/documentos/${doc.id}`}
+                                                >
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                    >
                                                         <Eye className="h-4 w-4" />
                                                     </Button>
                                                 </Link>

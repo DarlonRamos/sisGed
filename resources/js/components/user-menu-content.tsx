@@ -1,5 +1,11 @@
 import { Link, router } from '@inertiajs/react';
-import { LogOut, Settings, User as UserIcon, Palette, Shield } from 'lucide-react';
+import {
+    LogOut,
+    Settings,
+    User as UserIcon,
+    Palette,
+    Shield,
+} from 'lucide-react';
 import {
     DropdownMenuGroup,
     DropdownMenuItem,
@@ -38,7 +44,7 @@ export function UserMenuContent({ user }: Props) {
 
             {/* Conta */}
             <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs text-muted-foreground">
+                <DropdownMenuLabel className="text-muted-foreground text-xs">
                     Minha Conta
                 </DropdownMenuLabel>
                 <DropdownMenuItem asChild>

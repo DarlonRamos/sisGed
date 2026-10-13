@@ -84,7 +84,7 @@ export function AppSidebar() {
                                  * Ícone do logo:
                                  * fica sempre visível, inclusive no modo "icon".
                                  */}
-                                <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-md">
                                     <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
                                 </div>
 
@@ -109,10 +109,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter
-                    items={footerNavItems}
-                    className="mt-auto"
-                />
+                <NavFooter items={footerNavItems} className="mt-auto" />
 
                 <NavUser />
             </SidebarFooter>

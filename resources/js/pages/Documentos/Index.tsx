@@ -92,12 +92,20 @@ const statusColors: Record<string, string> = {
     ELIMINADO: 'bg-red-100 text-red-800',
 };
 
-export default function Index({ documentos, tiposDocumentais, filtros }: Props) {
+export default function Index({
+    documentos,
+    tiposDocumentais,
+    filtros,
+}: Props) {
     // Estado dos filtros (inicializa com os filtros da URL)
     const [busca, setBusca] = useState(filtros.busca || '');
     const [status, setStatus] = useState(filtros.status || 'todos');
-    const [tipoDocumental, setTipoDocumental] = useState(filtros.tipo_documental || 'todos');
-    const [destinacaoFinal, setDestinacaoFinal] = useState(filtros.destinacao_final || 'todos');
+    const [tipoDocumental, setTipoDocumental] = useState(
+        filtros.tipo_documental || 'todos',
+    );
+    const [destinacaoFinal, setDestinacaoFinal] = useState(
+        filtros.destinacao_final || 'todos',
+    );
     const [dataInicio, setDataInicio] = useState(filtros.data_inicio || '');
     const [dataFim, setDataFim] = useState(filtros.data_fim || '');
     const [ordem, setOrdem] = useState(filtros.ordem || 'desc');
@@ -109,8 +117,10 @@ export default function Index({ documentos, tiposDocumentais, filtros }: Props) 
             const params = {
                 busca: busca || undefined,
                 status: status !== 'todos' ? status : undefined,
-                tipo_documental: tipoDocumental !== 'todos' ? tipoDocumental : undefined,
-                destinacao_final: destinacaoFinal !== 'todos' ? destinacaoFinal : undefined,
+                tipo_documental:
+                    tipoDocumental !== 'todos' ? tipoDocumental : undefined,
+                destinacao_final:
+                    destinacaoFinal !== 'todos' ? destinacaoFinal : undefined,
                 data_inicio: dataInicio || undefined,
                 data_fim: dataFim || undefined,
                 ordem,
@@ -123,7 +133,15 @@ export default function Index({ documentos, tiposDocumentais, filtros }: Props) 
                 replace: true,
             });
         },
-        [busca, status, tipoDocumental, destinacaoFinal, dataInicio, dataFim, ordem]
+        [
+            busca,
+            status,
+            tipoDocumental,
+            destinacaoFinal,
+            dataInicio,
+            dataFim,
+            ordem,
+        ],
     );
 
     // Debounce da busca (500ms)
@@ -174,8 +192,8 @@ export default function Index({ documentos, tiposDocumentais, filtros }: Props) 
         });
     };
 
-return (
-    <AppLayout breadcrumbs={breadcrumbs}>
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Documentos Digitalizados" />
 
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
@@ -186,7 +204,8 @@ return (
                             📁 Documentos Digitalizados
                         </h1>
                         <p className="text-muted-foreground">
-                            Gerencie os documentos físicos digitalizados do acervo
+                            Gerencie os documentos físicos digitalizados do
+                            acervo
                         </p>
                     </div>
                     <Link href="/documentos/upload">
@@ -204,12 +223,16 @@ return (
                             <CardTitle className="text-sm font-medium">
                                 Total
                             </CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            <FileText className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{documentos.total}</div>
-                            <p className="text-xs text-muted-foreground">
-                                {filtrosAtivos > 0 ? 'Filtrados' : 'Documentos no acervo'}
+                            <div className="text-2xl font-bold">
+                                {documentos.total}
+                            </div>
+                            <p className="text-muted-foreground text-xs">
+                                {filtrosAtivos > 0
+                                    ? 'Filtrados'
+                                    : 'Documentos no acervo'}
                             </p>
                         </CardContent>
                     </Card>
@@ -223,9 +246,13 @@ return (
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-blue-600">
-                                {documentos.data.filter((d) => d.status === 'DIGITALIZADO').length}
+                                {
+                                    documentos.data.filter(
+                                        (d) => d.status === 'DIGITALIZADO',
+                                    ).length
+                                }
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Nesta página
                             </p>
                         </CardContent>
@@ -240,9 +267,15 @@ return (
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-green-600">
-                                {documentos.data.filter((d) => d.destinacao_final === 'GUARDA_PERMANENTE').length}
+                                {
+                                    documentos.data.filter(
+                                        (d) =>
+                                            d.destinacao_final ===
+                                            'GUARDA_PERMANENTE',
+                                    ).length
+                                }
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Nesta página
                             </p>
                         </CardContent>
@@ -259,7 +292,7 @@ return (
                             <div className="text-2xl font-bold text-purple-600">
                                 {documentos.current_page}/{documentos.last_page}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 {documentos.per_page} por página
                             </p>
                         </CardContent>
@@ -271,7 +304,9 @@ return (
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle className="text-base">Filtros</CardTitle>
+                                <CardTitle className="text-base">
+                                    Filtros
+                                </CardTitle>
                                 <CardDescription>
                                     {filtrosAtivos > 0
                                         ? `${filtrosAtivos} filtro(s) ativo(s)`
@@ -280,7 +315,11 @@ return (
                             </div>
                             <div className="flex gap-2">
                                 {filtrosAtivos > 0 && (
-                                    <Button variant="ghost" size="sm" onClick={limparFiltros}>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={limparFiltros}
+                                    >
                                         <X className="mr-2 h-4 w-4" />
                                         Limpar
                                     </Button>
@@ -288,7 +327,9 @@ return (
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => setMostrarFiltros(!mostrarFiltros)}
+                                    onClick={() =>
+                                        setMostrarFiltros(!mostrarFiltros)
+                                    }
                                 >
                                     <Filter className="mr-2 h-4 w-4" />
                                     {mostrarFiltros ? 'Ocultar' : 'Mostrar'}
@@ -299,7 +340,7 @@ return (
                     <CardContent className="space-y-4">
                         {/* Busca sempre visível */}
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                             <Input
                                 placeholder="Buscar por título, assunto ou operador..."
                                 value={busca}
@@ -320,7 +361,10 @@ return (
                                             onValueChange={(value) => {
                                                 setStatus(value);
                                                 aplicarFiltros({
-                                                    status: value !== 'todos' ? value : undefined,
+                                                    status:
+                                                        value !== 'todos'
+                                                            ? value
+                                                            : undefined,
                                                 });
                                             }}
                                         >
@@ -328,11 +372,21 @@ return (
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="todos">Todos</SelectItem>
-                                                <SelectItem value="PENDENTE">Pendente</SelectItem>
-                                                <SelectItem value="DIGITALIZADO">Digitalizado</SelectItem>
-                                                <SelectItem value="ASSINADO">Assinado</SelectItem>
-                                                <SelectItem value="ELIMINADO">Eliminado</SelectItem>
+                                                <SelectItem value="todos">
+                                                    Todos
+                                                </SelectItem>
+                                                <SelectItem value="PENDENTE">
+                                                    Pendente
+                                                </SelectItem>
+                                                <SelectItem value="DIGITALIZADO">
+                                                    Digitalizado
+                                                </SelectItem>
+                                                <SelectItem value="ASSINADO">
+                                                    Assinado
+                                                </SelectItem>
+                                                <SelectItem value="ELIMINADO">
+                                                    Eliminado
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -345,7 +399,10 @@ return (
                                             onValueChange={(value) => {
                                                 setTipoDocumental(value);
                                                 aplicarFiltros({
-                                                    tipo_documental: value !== 'todos' ? value : undefined,
+                                                    tipo_documental:
+                                                        value !== 'todos'
+                                                            ? value
+                                                            : undefined,
                                                 });
                                             }}
                                         >
@@ -353,12 +410,19 @@ return (
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="todos">Todos</SelectItem>
-                                                {tiposDocumentais.map((tipo) => (
-                                                    <SelectItem key={tipo} value={tipo}>
-                                                        {tipo}
-                                                    </SelectItem>
-                                                ))}
+                                                <SelectItem value="todos">
+                                                    Todos
+                                                </SelectItem>
+                                                {tiposDocumentais.map(
+                                                    (tipo) => (
+                                                        <SelectItem
+                                                            key={tipo}
+                                                            value={tipo}
+                                                        >
+                                                            {tipo}
+                                                        </SelectItem>
+                                                    ),
+                                                )}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -371,7 +435,10 @@ return (
                                             onValueChange={(value) => {
                                                 setDestinacaoFinal(value);
                                                 aplicarFiltros({
-                                                    destinacao_final: value !== 'todos' ? value : undefined,
+                                                    destinacao_final:
+                                                        value !== 'todos'
+                                                            ? value
+                                                            : undefined,
                                                 });
                                             }}
                                         >
@@ -379,9 +446,15 @@ return (
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="todos">Todas</SelectItem>
-                                                <SelectItem value="GUARDA_TEMPORARIA">Guarda Temporária</SelectItem>
-                                                <SelectItem value="GUARDA_PERMANENTE">Guarda Permanente</SelectItem>
+                                                <SelectItem value="todos">
+                                                    Todas
+                                                </SelectItem>
+                                                <SelectItem value="GUARDA_TEMPORARIA">
+                                                    Guarda Temporária
+                                                </SelectItem>
+                                                <SelectItem value="GUARDA_PERMANENTE">
+                                                    Guarda Permanente
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -393,15 +466,21 @@ return (
                                             value={ordem}
                                             onValueChange={(value) => {
                                                 setOrdem(value);
-                                                aplicarFiltros({ ordem: value });
+                                                aplicarFiltros({
+                                                    ordem: value,
+                                                });
                                             }}
                                         >
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="desc">Mais recentes</SelectItem>
-                                                <SelectItem value="asc">Mais antigos</SelectItem>
+                                                <SelectItem value="desc">
+                                                    Mais recentes
+                                                </SelectItem>
+                                                <SelectItem value="asc">
+                                                    Mais antigos
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -412,14 +491,18 @@ return (
                                     <div className="grid gap-2">
                                         <Label>Data Inicial</Label>
                                         <div className="relative">
-                                            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Calendar className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                                             <Input
                                                 type="date"
                                                 value={dataInicio}
                                                 onChange={(e) => {
-                                                    setDataInicio(e.target.value);
+                                                    setDataInicio(
+                                                        e.target.value,
+                                                    );
                                                     aplicarFiltros({
-                                                        data_inicio: e.target.value || undefined,
+                                                        data_inicio:
+                                                            e.target.value ||
+                                                            undefined,
                                                     });
                                                 }}
                                                 className="pl-10"
@@ -429,14 +512,16 @@ return (
                                     <div className="grid gap-2">
                                         <Label>Data Final</Label>
                                         <div className="relative">
-                                            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Calendar className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                                             <Input
                                                 type="date"
                                                 value={dataFim}
                                                 onChange={(e) => {
                                                     setDataFim(e.target.value);
                                                     aplicarFiltros({
-                                                        data_fim: e.target.value || undefined,
+                                                        data_fim:
+                                                            e.target.value ||
+                                                            undefined,
                                                     });
                                                 }}
                                                 className="pl-10"
@@ -454,8 +539,8 @@ return (
                     <CardContent className="pt-6">
                         {documentos.data.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-                                <h3 className="text-lg font-semibold mb-2">
+                                <FileText className="text-muted-foreground mb-4 h-12 w-12" />
+                                <h3 className="mb-2 text-lg font-semibold">
                                     {filtrosAtivos > 0
                                         ? 'Nenhum documento encontrado com esses filtros'
                                         : 'Nenhum documento cadastrado'}
@@ -466,7 +551,10 @@ return (
                                         : 'Comece digitalizando seu primeiro documento'}
                                 </p>
                                 {filtrosAtivos > 0 ? (
-                                    <Button variant="outline" onClick={limparFiltros}>
+                                    <Button
+                                        variant="outline"
+                                        onClick={limparFiltros}
+                                    >
                                         <X className="mr-2 h-4 w-4" />
                                         Limpar filtros
                                     </Button>
@@ -491,7 +579,9 @@ return (
                                                 <TableHead>Data</TableHead>
                                                 <TableHead>Tamanho</TableHead>
                                                 <TableHead>Status</TableHead>
-                                                <TableHead className="text-right">Ações</TableHead>
+                                                <TableHead className="text-right">
+                                                    Ações
+                                                </TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -499,30 +589,46 @@ return (
                                                 <TableRow key={doc.id}>
                                                     <TableCell className="font-medium">
                                                         <div>
-                                                            <div className="font-semibold">{doc.titulo}</div>
+                                                            <div className="font-semibold">
+                                                                {doc.titulo}
+                                                            </div>
                                                             {doc.assunto && (
-                                                                <div className="text-sm text-muted-foreground">
-                                                                    {doc.assunto}
+                                                                <div className="text-muted-foreground text-sm">
+                                                                    {
+                                                                        doc.assunto
+                                                                    }
                                                                 </div>
                                                             )}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge variant="outline">
-                                                            {doc.tipo_documental}
+                                                            {
+                                                                doc.tipo_documental
+                                                            }
                                                         </Badge>
                                                     </TableCell>
-                                                    <TableCell>{doc.operador_responsavel_nome}</TableCell>
                                                     <TableCell>
-                                                        {formatarData(doc.data_hora_digitalizacao)}
+                                                        {
+                                                            doc.operador_responsavel_nome
+                                                        }
                                                     </TableCell>
                                                     <TableCell>
-                                                        {formatarTamanho(doc.tamanho_arquivo)}
+                                                        {formatarData(
+                                                            doc.data_hora_digitalizacao,
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {formatarTamanho(
+                                                            doc.tamanho_arquivo,
+                                                        )}
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge
                                                             className={
-                                                                statusColors[doc.status] ||
+                                                                statusColors[
+                                                                    doc.status
+                                                                ] ||
                                                                 'bg-gray-100 text-gray-800'
                                                             }
                                                         >
@@ -531,18 +637,33 @@ return (
                                                     </TableCell>
                                                     <TableCell className="text-right">
                                                         <div className="flex justify-end gap-2">
-                                                            <Link href={`/documentos/${doc.id}`}>
-                                                                <Button variant="ghost" size="sm">
+                                                            <Link
+                                                                href={`/documentos/${doc.id}`}
+                                                            >
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                >
                                                                     <Eye className="h-4 w-4" />
                                                                 </Button>
                                                             </Link>
-                                                            <a href={`/documentos/${doc.id}/download`}>
-                                                                <Button variant="ghost" size="sm">
+                                                            <a
+                                                                href={`/documentos/${doc.id}/download`}
+                                                            >
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                >
                                                                     <Download className="h-4 w-4" />
                                                                 </Button>
                                                             </a>
-                                                            <Link href={`/documentos/${doc.id}/verificar`}>
-                                                                <Button variant="ghost" size="sm">
+                                                            <Link
+                                                                href={`/documentos/${doc.id}/verificar`}
+                                                            >
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                >
                                                                     <ShieldCheck className="h-4 w-4" />
                                                                 </Button>
                                                             </Link>
@@ -556,23 +677,28 @@ return (
 
                                 {/* Paginação */}
                                 {documentos.last_page > 1 && (
-                                    <div className="flex items-center justify-between mt-4">
-                                        <div className="text-sm text-muted-foreground">
-                                            Mostrando {documentos.data.length} de {documentos.total} documentos
+                                    <div className="mt-4 flex items-center justify-between">
+                                        <div className="text-muted-foreground text-sm">
+                                            Mostrando {documentos.data.length}{' '}
+                                            de {documentos.total} documentos
                                         </div>
                                         <div className="flex gap-1">
-                                            {documentos.links.map((link, index) => (
-                                                <Link
-                                                    key={index}
-                                                    href={link.url || '#'}
-                                                    className={`px-3 py-1 rounded border text-sm ${
-                                                        link.active
-                                                            ? 'bg-primary text-primary-foreground'
-                                                            : 'hover:bg-accent'
-                                                    } ${!link.url ? 'opacity-50 pointer-events-none' : ''}`}
-                                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                                />
-                                            ))}
+                                            {documentos.links.map(
+                                                (link, index) => (
+                                                    <Link
+                                                        key={index}
+                                                        href={link.url || '#'}
+                                                        className={`rounded border px-3 py-1 text-sm ${
+                                                            link.active
+                                                                ? 'bg-primary text-primary-foreground'
+                                                                : 'hover:bg-accent'
+                                                        } ${!link.url ? 'pointer-events-none opacity-50' : ''}`}
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: link.label,
+                                                        }}
+                                                    />
+                                                ),
+                                            )}
                                         </div>
                                     </div>
                                 )}

@@ -20,7 +20,8 @@ if (csrfToken) {
         ?.split('=')[1];
 
     if (xsrfToken) {
-        axios.defaults.headers.common['X-XSRF-TOKEN'] = decodeURIComponent(xsrfToken);
+        axios.defaults.headers.common['X-XSRF-TOKEN'] =
+            decodeURIComponent(xsrfToken);
     }
 }
 

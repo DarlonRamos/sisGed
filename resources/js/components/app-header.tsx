@@ -218,7 +218,7 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<Props>) {
                                 ))}
                             </div>
                         </div>
-                        
+
                         {/* ⚠️ PROTEÇÃO: Só mostra o menu do usuário se estiver logado */}
                         {user ? (
                             <DropdownMenu>
@@ -238,7 +238,10 @@ export function AppHeader({ breadcrumbs = [] }: Readonly<Props>) {
                                         </Avatar>
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56" align="end">
+                                <DropdownMenuContent
+                                    className="w-56"
+                                    align="end"
+                                >
                                     <UserMenuContent user={user} />
                                 </DropdownMenuContent>
                             </DropdownMenu>

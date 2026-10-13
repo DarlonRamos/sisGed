@@ -62,13 +62,14 @@ export default function Create() {
         post('/ttd');
     };
 
-    const prazoTotal = data.prazo_guarda_corrente + data.prazo_guarda_intermediaria;
+    const prazoTotal =
+        data.prazo_guarda_corrente + data.prazo_guarda_intermediaria;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Nova Tabela de Temporalidade" />
 
-            <div className="flex h-full flex-1 flex-col gap-4 p-4 max-w-4xl mx-auto">
+            <div className="mx-auto flex h-full max-w-4xl flex-1 flex-col gap-4 p-4">
                 {/* Header */}
                 <div className="flex items-center gap-4">
                     <Link href="/ttd">
@@ -81,7 +82,8 @@ export default function Create() {
                             📋 Nova Tabela de Temporalidade
                         </h1>
                         <p className="text-muted-foreground">
-                            Defina os prazos e a destinação final para o tipo documental
+                            Defina os prazos e a destinação final para o tipo
+                            documental
                         </p>
                     </div>
                 </div>
@@ -90,9 +92,10 @@ export default function Create() {
                 <Alert>
                     <Info className="h-4 w-4" />
                     <AlertDescription>
-                        A <strong>TTD</strong> define o ciclo de vida dos documentos: quanto tempo
-                        ficam na repartição de origem (corrente), no arquivo intermediário, e se
-                        devem ser eliminados ou preservados permanentemente.
+                        A <strong>TTD</strong> define o ciclo de vida dos
+                        documentos: quanto tempo ficam na repartição de origem
+                        (corrente), no arquivo intermediário, e se devem ser
+                        eliminados ou preservados permanentemente.
                     </AlertDescription>
                 </Alert>
 
@@ -114,7 +117,12 @@ export default function Create() {
                                     id="tipo_documental"
                                     list="tipos-sugeridos"
                                     value={data.tipo_documental}
-                                    onChange={(e) => setData('tipo_documental', e.target.value)}
+                                    onChange={(e) =>
+                                        setData(
+                                            'tipo_documental',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Ex: Processo Administrativo"
                                     required
                                 />
@@ -123,7 +131,7 @@ export default function Create() {
                                         <option key={tipo} value={tipo} />
                                     ))}
                                 </datalist>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-muted-foreground text-xs">
                                     Digite um tipo novo ou selecione um sugerido
                                 </p>
                                 <InputError message={errors.tipo_documental} />
@@ -139,7 +147,8 @@ export default function Create() {
                                 2. Prazos de Guarda
                             </CardTitle>
                             <CardDescription>
-                                Tempo em anos que o documento deve ser guardado em cada fase
+                                Tempo em anos que o documento deve ser guardado
+                                em cada fase
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -153,18 +162,29 @@ export default function Create() {
                                         type="number"
                                         min="0"
                                         max="100"
-                                        value={data.prazo_guarda_corrente === 0 ? '' : data.prazo_guarda_corrente}
+                                        value={
+                                            data.prazo_guarda_corrente === 0
+                                                ? ''
+                                                : data.prazo_guarda_corrente
+                                        }
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            setData('prazo_guarda_corrente', value === '' ? 0 : parseInt(value) || 0);
+                                            setData(
+                                                'prazo_guarda_corrente',
+                                                value === ''
+                                                    ? 0
+                                                    : parseInt(value) || 0,
+                                            );
                                         }}
                                         placeholder="0"
                                         required
                                     />
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-muted-foreground text-xs">
                                         Tempo na repartição de origem
                                     </p>
-                                    <InputError message={errors.prazo_guarda_corrente} />
+                                    <InputError
+                                        message={errors.prazo_guarda_corrente}
+                                    />
                                 </div>
 
                                 <div className="grid gap-2">
@@ -176,27 +196,42 @@ export default function Create() {
                                         type="number"
                                         min="0"
                                         max="100"
-                                        value={data.prazo_guarda_intermediaria === 0 ? '' : data.prazo_guarda_intermediaria}
+                                        value={
+                                            data.prazo_guarda_intermediaria ===
+                                            0
+                                                ? ''
+                                                : data.prazo_guarda_intermediaria
+                                        }
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            setData('prazo_guarda_intermediaria', value === '' ? 0 : parseInt(value) || 0);
+                                            setData(
+                                                'prazo_guarda_intermediaria',
+                                                value === ''
+                                                    ? 0
+                                                    : parseInt(value) || 0,
+                                            );
                                         }}
                                         placeholder="0"
                                         required
                                     />
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-muted-foreground text-xs">
                                         Tempo no arquivo intermediário
                                     </p>
-                                    <InputError message={errors.prazo_guarda_intermediaria} />
+                                    <InputError
+                                        message={
+                                            errors.prazo_guarda_intermediaria
+                                        }
+                                    />
                                 </div>
                             </div>
 
-                            <div className="rounded-md bg-muted p-3">
+                            <div className="bg-muted rounded-md p-3">
                                 <p className="text-sm">
-                                    <strong>Prazo total:</strong>{' '}
-                                    {prazoTotal} ano(s) ={' '}
-                                    {data.prazo_guarda_corrente} (corrente) +{' '}
-                                    {data.prazo_guarda_intermediaria} (intermediária)
+                                    <strong>Prazo total:</strong> {prazoTotal}{' '}
+                                    ano(s) = {data.prazo_guarda_corrente}{' '}
+                                    (corrente) +{' '}
+                                    {data.prazo_guarda_intermediaria}{' '}
+                                    (intermediária)
                                 </p>
                             </div>
                         </CardContent>
@@ -215,7 +250,9 @@ export default function Create() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="destinacao_final">Destinação Final *</Label>
+                                <Label htmlFor="destinacao_final">
+                                    Destinação Final *
+                                </Label>
                                 <Select
                                     value={data.destinacao_final}
                                     onValueChange={(value) =>
@@ -227,10 +264,12 @@ export default function Create() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="ELIMINACAO">
-                                            🗑️ Eliminação — Pode ser destruído após prazos
+                                            🗑️ Eliminação — Pode ser destruído
+                                            após prazos
                                         </SelectItem>
                                         <SelectItem value="GUARDA_PERMANENTE">
-                                            🛡️ Guarda Permanente — Nunca eliminar (histórico)
+                                            🛡️ Guarda Permanente — Nunca
+                                            eliminar (histórico)
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -241,9 +280,11 @@ export default function Create() {
                                 <Alert className="border-green-200 bg-green-50">
                                     <ShieldAlert className="h-4 w-4 text-green-700" />
                                     <AlertDescription className="text-green-800">
-                                        <strong>Importante:</strong> documentos de Guarda 
-                                        Permanente <strong>NUNCA</strong> podem ser eliminados,
-                                        mesmo após os prazos. Eles têm valor histórico.
+                                        <strong>Importante:</strong> documentos
+                                        de Guarda Permanente{' '}
+                                        <strong>NUNCA</strong> podem ser
+                                        eliminados, mesmo após os prazos. Eles
+                                        têm valor histórico.
                                     </AlertDescription>
                                 </Alert>
                             )}
@@ -252,9 +293,13 @@ export default function Create() {
                                 <Alert className="border-red-200 bg-red-50">
                                     <ShieldAlert className="h-4 w-4 text-red-700" />
                                     <AlertDescription className="text-red-800">
-                                        <strong>Atenção:</strong> documentos elimináveis só podem
-                                        ser destruídos após <strong>edital de eliminação</strong> e
-                                        aprovação da <strong>Comissão Permanente de Avaliação.</strong>
+                                        <strong>Atenção:</strong> documentos
+                                        elimináveis só podem ser destruídos após{' '}
+                                        <strong>edital de eliminação</strong> e
+                                        aprovação da{' '}
+                                        <strong>
+                                            Comissão Permanente de Avaliação.
+                                        </strong>
                                     </AlertDescription>
                                 </Alert>
                             )}
@@ -275,10 +320,12 @@ export default function Create() {
                                 <Input
                                     id="base_legal"
                                     value={data.base_legal}
-                                    onChange={(e) => setData('base_legal', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('base_legal', e.target.value)
+                                    }
                                     placeholder="Ex: Lei nº 8.159/1991, Decreto nº 10.278/2020"
                                 />
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-muted-foreground text-xs">
                                     Norma que fundamenta esta TTD
                                 </p>
                                 <InputError message={errors.base_legal} />
@@ -289,7 +336,9 @@ export default function Create() {
                                 <Textarea
                                     id="observacoes"
                                     value={data.observacoes}
-                                    onChange={(e) => setData('observacoes', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('observacoes', e.target.value)
+                                    }
                                     placeholder="Informações adicionais relevantes..."
                                     rows={3}
                                 />

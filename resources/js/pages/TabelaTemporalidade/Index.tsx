@@ -65,7 +65,7 @@ export default function Index({ ttds }: Props) {
 
         if (
             !confirm(
-                `Tem certeza que deseja excluir a TTD "${ttd.tipo_documental}"?\n\nEsta ação não pode ser desfeita.`
+                `Tem certeza que deseja excluir a TTD "${ttd.tipo_documental}"?\n\nEsta ação não pode ser desfeita.`,
             )
         ) {
             return;
@@ -76,9 +76,16 @@ export default function Index({ ttds }: Props) {
         });
     };
 
-    const totalDocumentos = ttds.reduce((acc, ttd) => acc + ttd.documentos_count, 0);
-    const totalPermanente = ttds.filter((t) => t.destinacao_final === 'GUARDA_PERMANENTE').length;
-    const totalEliminacao = ttds.filter((t) => t.destinacao_final === 'ELIMINACAO').length;
+    const totalDocumentos = ttds.reduce(
+        (acc, ttd) => acc + ttd.documentos_count,
+        0,
+    );
+    const totalPermanente = ttds.filter(
+        (t) => t.destinacao_final === 'GUARDA_PERMANENTE',
+    ).length;
+    const totalEliminacao = ttds.filter(
+        (t) => t.destinacao_final === 'ELIMINACAO',
+    ).length;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -92,7 +99,8 @@ export default function Index({ ttds }: Props) {
                             📋 Tabela de Temporalidade
                         </h1>
                         <p className="text-muted-foreground">
-                            Defina prazos e destinação final para cada tipo documental
+                            Defina prazos e destinação final para cada tipo
+                            documental
                         </p>
                     </div>
                     <Link href="/ttd/create">
@@ -110,11 +118,13 @@ export default function Index({ ttds }: Props) {
                             <CardTitle className="text-sm font-medium">
                                 Tipos Cadastrados
                             </CardTitle>
-                            <Table2 className="h-4 w-4 text-muted-foreground" />
+                            <Table2 className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{ttds.length}</div>
-                            <p className="text-xs text-muted-foreground">
+                            <div className="text-2xl font-bold">
+                                {ttds.length}
+                            </div>
+                            <p className="text-muted-foreground text-xs">
                                 Tabelas de temporalidade
                             </p>
                         </CardContent>
@@ -131,7 +141,7 @@ export default function Index({ ttds }: Props) {
                             <div className="text-2xl font-bold text-blue-600">
                                 {totalDocumentos}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Total de documentos
                             </p>
                         </CardContent>
@@ -148,7 +158,7 @@ export default function Index({ ttds }: Props) {
                             <div className="text-2xl font-bold text-green-600">
                                 {totalPermanente}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Tipos históricos
                             </p>
                         </CardContent>
@@ -165,7 +175,7 @@ export default function Index({ ttds }: Props) {
                             <div className="text-2xl font-bold text-red-600">
                                 {totalEliminacao}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 Tipos elimináveis
                             </p>
                         </CardContent>
@@ -185,12 +195,13 @@ export default function Index({ ttds }: Props) {
                     <CardContent>
                         {ttds.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <Table2 className="h-12 w-12 text-muted-foreground mb-4" />
-                                <h3 className="text-lg font-semibold mb-2">
+                                <Table2 className="text-muted-foreground mb-4 h-12 w-12" />
+                                <h3 className="mb-2 text-lg font-semibold">
                                     Nenhuma TTD cadastrada
                                 </h3>
                                 <p className="text-muted-foreground mb-4">
-                                    Comece criando a primeira Tabela de Temporalidade
+                                    Comece criando a primeira Tabela de
+                                    Temporalidade
                                 </p>
                                 <Link href="/ttd/create">
                                     <Button>
@@ -204,7 +215,9 @@ export default function Index({ ttds }: Props) {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Tipo Documental</TableHead>
+                                            <TableHead>
+                                                Tipo Documental
+                                            </TableHead>
                                             <TableHead className="text-center">
                                                 <div className="flex items-center justify-center gap-1">
                                                     <Clock className="h-4 w-4" />
@@ -217,10 +230,16 @@ export default function Index({ ttds }: Props) {
                                                     Intermediária
                                                 </div>
                                             </TableHead>
-                                            <TableHead>Destinação Final</TableHead>
-                                            <TableHead className="text-center">Documentos</TableHead>
+                                            <TableHead>
+                                                Destinação Final
+                                            </TableHead>
+                                            <TableHead className="text-center">
+                                                Documentos
+                                            </TableHead>
                                             <TableHead>Base Legal</TableHead>
-                                            <TableHead className="text-right">Ações</TableHead>
+                                            <TableHead className="text-right">
+                                                Ações
+                                            </TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -230,13 +249,18 @@ export default function Index({ ttds }: Props) {
                                                     {ttd.tipo_documental}
                                                 </TableCell>
                                                 <TableCell className="text-center">
-                                                    {ttd.prazo_guarda_corrente} ano(s)
+                                                    {ttd.prazo_guarda_corrente}{' '}
+                                                    ano(s)
                                                 </TableCell>
                                                 <TableCell className="text-center">
-                                                    {ttd.prazo_guarda_intermediaria} ano(s)
+                                                    {
+                                                        ttd.prazo_guarda_intermediaria
+                                                    }{' '}
+                                                    ano(s)
                                                 </TableCell>
                                                 <TableCell>
-                                                    {ttd.destinacao_final === 'GUARDA_PERMANENTE' ? (
+                                                    {ttd.destinacao_final ===
+                                                    'GUARDA_PERMANENTE' ? (
                                                         <Badge className="bg-green-100 text-green-800">
                                                             🛡️ Guarda Permanente
                                                         </Badge>
@@ -247,9 +271,12 @@ export default function Index({ ttds }: Props) {
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="text-center">
-                                                    {ttd.documentos_count > 0 ? (
+                                                    {ttd.documentos_count >
+                                                    0 ? (
                                                         <Badge variant="outline">
-                                                            {ttd.documentos_count}
+                                                            {
+                                                                ttd.documentos_count
+                                                            }
                                                         </Badge>
                                                     ) : (
                                                         <span className="text-muted-foreground">
@@ -257,23 +284,36 @@ export default function Index({ ttds }: Props) {
                                                         </span>
                                                     )}
                                                 </TableCell>
-                                                <TableCell className="text-sm text-muted-foreground">
+                                                <TableCell className="text-muted-foreground text-sm">
                                                     {ttd.base_legal || '—'}
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex justify-end gap-2">
-                                                        <Link href={`/ttd/${ttd.id}/edit`}>
-                                                            <Button variant="ghost" size="sm">
+                                                        <Link
+                                                            href={`/ttd/${ttd.id}/edit`}
+                                                        >
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                            >
                                                                 <Pencil className="h-4 w-4" />
                                                             </Button>
                                                         </Link>
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
-                                                            onClick={() => handleDelete(ttd)}
-                                                            disabled={ttd.documentos_count > 0}
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    ttd,
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                ttd.documentos_count >
+                                                                0
+                                                            }
                                                             title={
-                                                                ttd.documentos_count > 0
+                                                                ttd.documentos_count >
+                                                                0
                                                                     ? 'Não é possível excluir: há documentos vinculados'
                                                                     : 'Excluir'
                                                             }
